@@ -629,21 +629,23 @@ func Register[I, O any](api API, op Operation, handler func(context.Context, *I)
 
 		switch contentType {
 		case "multipart/form-data":
-			op.RequestBody.Content["multipart/form-data"] = &MediaType{
-				Schema: &Schema{
-					Type: "object",
-					Properties: map[string]*Schema{
-						"name": {
-							Type:        "string",
-							Description: "general purpose name for multipart form value",
-						},
-						"filename": {
-							Type:        "string",
-							Format:      "binary",
-							Description: "filename of the file being uploaded",
+			if op.RequestBody.Content["multipart/form-data"] == nil {
+				op.RequestBody.Content["multipart/form-data"] = &MediaType{
+					Schema: &Schema{
+						Type: "object",
+						Properties: map[string]*Schema{
+							"name": {
+								Type:        "string",
+								Description: "general purpose name for multipart form value",
+							},
+							"filename": {
+								Type:        "string",
+								Format:      "binary",
+								Description: "filename of the file being uploaded",
+							},
 						},
 					},
-				},
+				}
 			}
 		default:
 			op.RequestBody.Content[contentType] = &MediaType{
